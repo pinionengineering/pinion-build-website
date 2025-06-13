@@ -3,13 +3,13 @@ export {
 	handleCallback,
 	fetchOIDCConfig,
 	setupNavbar
-}
+};
 
 const config = {
-	clientId: 'R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq',
-	redirectUri: window.location.origin + window.location.pathname,
+	clientId: window.APP_CONFIG.CLIENT_ID,
+	redirectUri: window.APP_CONFIG.APP_URL + window.location.pathname,
 	scope: 'openid profile',
-	issuer: 'https://hydrogen.pinion.build/authen/application/o/pinion-cli/'
+	issuer: window.APP_CONFIG.OAUTH_ISSUER
 };
 
 let oidcConfig = null;
@@ -21,9 +21,23 @@ function base64UrlEncode(buffer) {
 }
 
 async function fetchOIDCConfig() {
-	const res = await fetch(`${config.issuer}.well-known/openid-configuration`);
-	if (!res.ok) throw new Error('OIDC discovery failed');
-	oidcConfig = await res.json();
+	try {
+		const res = await fetch(`${config.issuer}.well-known/openid-configuration`);
+		if (!res.ok) throw new Error('OIDC discovery failed');
+		oidcConfig = await res.json();
+
+		// Cache in sessionStorage for resilience
+		sessionStorage.setItem('oidc_config', JSON.stringify(oidcConfig));
+	} catch (error) {
+		// Try to use cached config
+		const cached = sessionStorage.getItem('oidc_config');
+		if (cached) {
+			oidcConfig = JSON.parse(cached);
+			console.warn('Using cached OIDC config due to network error');
+		} else {
+			throw error;
+		}
+	}
 }
 
 async function generatePKCE() {
@@ -40,22 +54,29 @@ function getQueryParam(name) {
 }
 
 async function startAuthFlow() {
-	const { codeVerifier, codeChallenge } = await generatePKCE();
-	sessionStorage.setItem('pkce_verifier', codeVerifier);
+	try {
+		const { codeVerifier, codeChallenge } = await generatePKCE();
+		sessionStorage.setItem('pkce_verifier', codeVerifier);
 
-	const params = new URLSearchParams({
-		response_type: 'code',
-		client_id: config.clientId,
-		redirect_uri: config.redirectUri,
-		scope: config.scope,
-		code_challenge: codeChallenge,
-		code_challenge_method: 'S256'
-	});
+		// Store the original URL to return to after auth
+		sessionStorage.setItem('auth_return_url', window.location.href);
 
-	sessionStorage.removeItem('access_token');
-	sessionStorage.removeItem('access_token_expires_at');
+		// ... rest of the flow
+	} catch (error) {
+		console.error('Failed to start auth flow:', error);
+		// Show user-friendly error
+		showAuthError('Unable to start login process. Please try again.');
+	}
+}
 
-	window.location.href = `${oidcConfig.authorization_endpoint}?${params}`;
+function showAuthError(message) {
+	// Reuse your notification system
+	const notification = document.getElementById('notification');
+	if (notification) {
+		notification.textContent = message;
+		notification.className = 'notification error show';
+		setTimeout(() => notification.classList.remove('show'), 5000);
+	}
 }
 
 async function exchangeCodeForToken(code, codeVerifier) {
@@ -231,6 +252,11 @@ async function getAccessToken() {
 
 	const accessToken = sessionStorage.getItem('access_token');
 
+	if (window.location.search.includes('code=')) {
+		console.log('Auth callback in progress, skipping token check');
+		return null;
+	}
+
 	if (!accessToken || isAccessTokenExpired()) {
 		console.log('Access token missing or expired — attempting silent renewal');
 		try {
@@ -269,11 +295,20 @@ async function setupNavbar() {
 
 	const accessToken = sessionStorage.getItem('access_token');
 	if (accessToken && !isAccessTokenExpired()) {
-		const logoutUrl = oidcConfig.end_session_endpoint + '?post_logout_redirect_uri=' + encodeURIComponent(config.redirectUri);
+		const logoutUrl = oidcConfig.end_session_endpoint +
+			'?post_logout_redirect_uri=' + encodeURIComponent(window.APP_CONFIG.APP_URL);
 		const logoutLink = document.createElement('a');
 		logoutLink.href = logoutUrl;
 		logoutLink.innerText = 'Logout';
 		logoutLink.id = 'logout';
+
+		logoutLink.addEventListener('click', () => {
+			// Clear all auth data
+			sessionStorage.removeItem('access_token');
+			sessionStorage.removeItem('id_token');
+			sessionStorage.removeItem('refresh_token');
+			sessionStorage.removeItem('access_token_expires_at');
+		});
 
 		navbar.appendChild(logoutLink);
 	} else {
