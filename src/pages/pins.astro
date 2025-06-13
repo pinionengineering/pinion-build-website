@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Pins - Pinion LLC" script="pins">
+  <section>
+    <h2>Pins</h2>
+  </section>
+  <section id="filters">
+    <h3>Filter Pins</h3>
+    <form id="filter-form">
+      <div class="form-group">
+        <label for="filter-range-start">Start Date:</label>
+        <input type="date" id="filter-range-start" name="start">
+      </div>
+      <div class="form-group">
+        <label for="filter-range-end">End Date:</label>
+        <input type="date" id="filter-range-end" name="end">
+      </div>
+      <div class="form-group">
+        <label for="filter-limit">Limit:</label>
+        <input type="number" id="filter-limit" name="limit" min="1" max="100">
+      </div>
+      <div class="form-group">
+        <label for="filter-cid">CID:</label>
+        <input type="text" id="filter-cid" name="cids" placeholder="Qm...">
+      </div>
+      <button type="button" id="apply-filters">Apply Filters</button>
+    </form>
+  </section>
+  <section>
+    <div id="pins-loading" style="display: none; text-align: center; padding: 1em;">
+      <span class="spinner"></span> Loading pins...
+    </div>
+    <div id="pins-container">
+      <!-- Pin cards are populated by JavaScript -->
+    </div>
+  </section>
+  <section>
+    <label id="custom-upload-button">
+      Select files to upload
+      <input type="file" id="upload-input" multiple style="display: none;" />
+    </label>
+    <div id="upload-progress">
+      <!-- progress bars for uploads. This is handled by Javascript -->
+    </div>
+  </section>
+</Layout>

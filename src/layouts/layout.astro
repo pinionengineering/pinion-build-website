@@ -1,0 +1,41 @@
+---
+export interface Props {
+  title: string;
+  script?: string;
+}
+
+const { title, script } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title}</title>
+  <link rel="stylesheet" href="/style.css">
+  {script === 'products' && <script src="https://js.stripe.com/v3/"></script>}
+</head>
+<body>
+  <header>
+    <h1>...OooOooO</h1>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/pins">Pins</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+  <main>
+    <slot />
+  </main>
+  <footer>
+    <p>&copy; 2025 Pinion LLC</p>
+  </footer>
+  {script === 'products' && <script src="/products.js" defer></script>}
+  {script === 'pins' && <script type="module" src="/pins.js" defer></script>}
+  <div id="notification" class="notification"></div>
+</body>
+</html>

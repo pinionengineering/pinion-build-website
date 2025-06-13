@@ -1,4 +1,4 @@
-import { getAccessToken, handleCallback, fetchOIDCConfig } from './oauth.js';
+import { getAccessToken, handleCallback, fetchOIDCConfig, setupNavbar } from './oauth.js';
 import { authenticatedApiRequest, showSubscriptionRequired } from './api.js';
 
 // Store active polling intervals
@@ -118,6 +118,7 @@ async function deletePin(requestId) {
 document.addEventListener('DOMContentLoaded', async () => {
 	await fetchOIDCConfig();
 	await handleCallback();
+	setupNavbar();
 	populateTable();
 	handleUploadAnywhere();
 

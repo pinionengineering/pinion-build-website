@@ -2,6 +2,7 @@ export {
 	getAccessToken,
 	handleCallback,
 	fetchOIDCConfig,
+	setupNavbar
 }
 
 const config = {
@@ -51,11 +52,9 @@ async function startAuthFlow() {
 		code_challenge_method: 'S256'
 	});
 
-	// Clear out stale access token so we don't accidentally use it
 	sessionStorage.removeItem('access_token');
 	sessionStorage.removeItem('access_token_expires_at');
 
-	// Redirect to login
 	window.location.href = `${oidcConfig.authorization_endpoint}?${params}`;
 }
 
@@ -87,7 +86,6 @@ function storeTokens(tokens) {
 	sessionStorage.setItem('id_token', tokens.id_token || '');
 	sessionStorage.setItem('access_token_expires_at', expiresAt.toString());
 
-	// Store refresh token if available
 	if (tokens.refresh_token) {
 		sessionStorage.setItem('refresh_token', tokens.refresh_token);
 	}
@@ -95,13 +93,11 @@ function storeTokens(tokens) {
 
 function isAccessTokenExpired() {
 	const expiresAt = parseInt(sessionStorage.getItem('access_token_expires_at') || '0', 10);
-	return Date.now() / 1000 >= expiresAt - 60; // refresh 60s early
+	return Date.now() / 1000 >= expiresAt - 60;
 }
 
-// Silent token renewal using hidden iframe
 async function renewTokenSilently() {
 	if (silentRenewalInProgress) {
-		// Wait for existing renewal to complete
 		return new Promise((resolve) => {
 			const checkInterval = setInterval(() => {
 				if (!silentRenewalInProgress) {
@@ -117,7 +113,6 @@ async function renewTokenSilently() {
 	try {
 		const { codeVerifier, codeChallenge } = await generatePKCE();
 
-		// Store the verifier for the silent renewal
 		sessionStorage.setItem('silent_pkce_verifier', codeVerifier);
 
 		const params = new URLSearchParams({
@@ -127,7 +122,7 @@ async function renewTokenSilently() {
 			scope: config.scope,
 			code_challenge: codeChallenge,
 			code_challenge_method: 'S256',
-			prompt: 'none' // silent renewal in iframe
+			prompt: 'none'
 		});
 
 		const authUrl = `${oidcConfig.authorization_endpoint}?${params}`;
@@ -140,7 +135,7 @@ async function renewTokenSilently() {
 			const timeoutId = setTimeout(() => {
 				cleanup();
 				reject(new Error('Silent renewal timeout'));
-			}, 10000); // 10 second timeout
+			}, 10000);
 
 			const cleanup = () => {
 				clearTimeout(timeoutId);
@@ -150,7 +145,6 @@ async function renewTokenSilently() {
 
 			iframe.onload = async () => {
 				try {
-					// Check if we can access the iframe content (same-origin)
 					const iframeUrl = iframe.contentWindow.location.href;
 					const urlParams = new URLSearchParams(new URL(iframeUrl).search);
 					const code = urlParams.get('code');
@@ -178,8 +172,6 @@ async function renewTokenSilently() {
 						resolve(tokens.access_token);
 					}
 				} catch (e) {
-					// If we can't access iframe content, it might be due to cross-origin
-					// In this case, we'll fall back to full page redirect
 					cleanup();
 					reject(new Error('Silent renewal failed - cross-origin restriction'));
 				}
@@ -198,7 +190,6 @@ async function renewTokenSilently() {
 	}
 }
 
-// Try refresh token approach first, then fall back to silent renewal
 async function refreshAccessToken() {
 	const refreshToken = sessionStorage.getItem('refresh_token');
 
@@ -226,12 +217,10 @@ async function refreshAccessToken() {
 		}
 	}
 
-	// Fall back to silent renewal if refresh token isn't available or failed
 	try {
 		return await renewTokenSilently();
 	} catch (error) {
 		console.warn('Silent renewal failed, falling back to full redirect:', error);
-		// Last resort: full page redirect
 		await startAuthFlow();
 		return null;
 	}
@@ -248,7 +237,7 @@ async function getAccessToken() {
 			return await refreshAccessToken();
 		} catch (error) {
 			console.error('Token renewal failed:', error);
-			await startAuthFlow(); // Full page redirect as last resort
+			await startAuthFlow();
 			return null;
 		}
 	}
@@ -266,8 +255,32 @@ async function handleCallback() {
 		const tokens = await exchangeCodeForToken(code, codeVerifier);
 		storeTokens(tokens);
 		sessionStorage.removeItem('pkce_verifier');
-		window.history.replaceState({}, '', config.redirectUri); // Clean up URL
+		window.history.replaceState({}, '', config.redirectUri);
 	} catch (err) {
 		throw new Error('Token exchange failed: ' + err.message);
 	}
 }
+
+async function setupNavbar() {
+	if (!oidcConfig) await fetchOIDCConfig();
+
+	const navbar = document.getElementById('navigation');
+	if (!navbar) return;
+
+	const accessToken = sessionStorage.getItem('access_token');
+	if (accessToken && !isAccessTokenExpired()) {
+		const logoutUrl = oidcConfig.end_session_endpoint + '?post_logout_redirect_uri=' + encodeURIComponent(config.redirectUri);
+		const logoutLink = document.createElement('a');
+		logoutLink.href = logoutUrl;
+		logoutLink.innerText = 'Logout';
+		logoutLink.id = 'logout';
+
+		navbar.appendChild(logoutLink);
+	} else {
+		const existingLogoutLink = document.getElementById('logout');
+		if (existingLogoutLink) {
+			navbar.removeChild(existingLogoutLink);
+		}
+	}
+}
+
