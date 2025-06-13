@@ -15,7 +15,7 @@ const { title, script } = Astro.props;
   <title>{title}</title>
   <link rel="stylesheet" href="/style.css">
   <!-- Load config first, before any other scripts -->
-  <script src="/config.js"></script>
+  <script src="/config.js" is:inline ></script>
   {script === 'products' && <script src="https://js.stripe.com/v3/"></script>}
 </head>
 <body>
