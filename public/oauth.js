@@ -290,8 +290,8 @@ async function handleCallback() {
 async function setupNavbar() {
 	if (!oidcConfig) await fetchOIDCConfig();
 
-	const navbar = document.getElementById('navigation');
-	if (!navbar) return;
+	const navlist = document.getElementById('navigationlist');
+	if (!navlist) return;
 
 	const accessToken = sessionStorage.getItem('access_token');
 	if (accessToken && !isAccessTokenExpired()) {
@@ -300,7 +300,6 @@ async function setupNavbar() {
 		const logoutLink = document.createElement('a');
 		logoutLink.href = logoutUrl;
 		logoutLink.innerText = 'Logout';
-		logoutLink.id = 'logout';
 
 		logoutLink.addEventListener('click', () => {
 			// Clear all auth data
@@ -309,8 +308,10 @@ async function setupNavbar() {
 			sessionStorage.removeItem('refresh_token');
 			sessionStorage.removeItem('access_token_expires_at');
 		});
-
-		navbar.appendChild(logoutLink);
+		li = document.createElement('li');
+		li.id = 'logout';
+		li.appendChild(logoutLink);
+		navlist.appendChild(li);
 	} else {
 		const existingLogoutLink = document.getElementById('logout');
 		if (existingLogoutLink) {
