@@ -15,7 +15,7 @@ function showSubscriptionRequired() {
 		<div class="subscription-alert-content">
 			<h3>Subscription Required</h3>
 			<p>You need an active subscription to access this feature.</p>
-			<a href="/products.html" class="subscription-alert-button">View Products</a>
+			<a href="/products/" class="subscription-alert-button">View Products</a>
 		</div>
 	`;
 
