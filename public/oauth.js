@@ -290,7 +290,7 @@ async function handleCallback() {
 async function setupNavbar() {
 	if (!oidcConfig) await fetchOIDCConfig();
 
-	const navlist = document.getElementById('navigationlist');
+	const navlist = document.getElementById('navigation-list');
 	if (!navlist) return;
 
 	const accessToken = sessionStorage.getItem('access_token');
