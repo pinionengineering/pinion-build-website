@@ -8,7 +8,7 @@ export {
 const config = {
 	clientId: window.APP_CONFIG.CLIENT_ID,
 	redirectUri: window.APP_CONFIG.APP_URL + window.location.pathname,
-	scope: 'openid profile',
+	scope: 'openid profile user-hint',
 	issuer: window.APP_CONFIG.OAUTH_ISSUER
 };
 
