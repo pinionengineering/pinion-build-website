@@ -7,6 +7,32 @@ export {
 	showSubscriptionRequired
 };
 
+// Function to show login required message
+function showLoginRequired() {
+	const message = document.createElement('div');
+	message.className = 'subscription-alert'; // Reuse same styling
+	message.innerHTML = `
+		<div class="subscription-alert-content">
+			<h3>Login Required</h3>
+			<p>Please log in to access your pins and account features.</p>
+			<button class="subscription-alert-button" onclick="window.location.reload()">Login</button>
+		</div>
+	`;
+
+	// Remove any existing alerts
+	const existingAlert = document.querySelector('.subscription-alert');
+	if (existingAlert) {
+		existingAlert.remove();
+	}
+
+	document.body.appendChild(message);
+
+	// Auto-hide after 10 seconds
+	setTimeout(() => {
+		message.remove();
+	}, 10000);
+}
+
 // Function to show subscription required message
 function showSubscriptionRequired() {
 	const message = document.createElement('div');
@@ -35,6 +61,13 @@ function showSubscriptionRequired() {
 
 async function authenticatedApiRequest(method, url, data = null) {
 	const token = await getAccessToken();
+
+	// Check if user is authenticated first
+	if (!token) {
+		showLoginRequired();
+		throw new Error('Authentication required');
+	}
+
 	const options = {
 		method,
 		headers: {
@@ -49,7 +82,7 @@ async function authenticatedApiRequest(method, url, data = null) {
 	try {
 		const res = await fetch(url, options);
 
-		// Handle unauthorized specifically
+		// Handle unauthorized specifically (this would be for subscription issues)
 		if (res.status === 401) {
 			showSubscriptionRequired();
 			throw new Error('Subscription required');
