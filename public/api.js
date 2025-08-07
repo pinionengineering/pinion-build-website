@@ -33,18 +33,12 @@ function showLoginRequired() {
 	const loginButton = document.getElementById('login-button');
 	loginButton.addEventListener('click', async () => {
 		try {
+			console.log('Starting auth flow...');
 			await startAuthFlow();
 		} catch (error) {
 			console.error('Failed to start login flow:', error);
 		}
 	});
-
-	// Auto-hide after 10 seconds
-	setTimeout(() => {
-		if (document.body.contains(message)) {
-			message.remove();
-		}
-	}, 10000);
 }
 
 // Function to show subscription required message
