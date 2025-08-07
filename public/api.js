@@ -1,10 +1,12 @@
 import {
-	getAccessToken
+	getAccessToken,
+	startAuthFlow
 } from './oauth.js';
 
 export {
 	authenticatedApiRequest,
-	showSubscriptionRequired
+	showSubscriptionRequired,
+	showLoginRequired
 };
 
 // Function to show login required message
@@ -15,7 +17,7 @@ function showLoginRequired() {
 		<div class="subscription-alert-content">
 			<h3>Login Required</h3>
 			<p>Please log in to access your pins and account features.</p>
-			<button class="subscription-alert-button" onclick="window.location.reload()">Login</button>
+			<button class="subscription-alert-button" id="login-button">Login</button>
 		</div>
 	`;
 
@@ -27,9 +29,21 @@ function showLoginRequired() {
 
 	document.body.appendChild(message);
 
+	// Add click handler to actually start the login flow
+	const loginButton = document.getElementById('login-button');
+	loginButton.addEventListener('click', async () => {
+		try {
+			await startAuthFlow();
+		} catch (error) {
+			console.error('Failed to start login flow:', error);
+		}
+	});
+
 	// Auto-hide after 10 seconds
 	setTimeout(() => {
-		message.remove();
+		if (document.body.contains(message)) {
+			message.remove();
+		}
 	}, 10000);
 }
 

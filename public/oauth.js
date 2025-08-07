@@ -1,8 +1,9 @@
 export {
+	fetchOIDCConfig,
 	getAccessToken,
 	handleCallback,
-	fetchOIDCConfig,
-	setupNavbar
+	setupNavbar,
+	startAuthFlow,
 };
 
 const config = {
