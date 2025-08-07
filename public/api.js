@@ -39,6 +39,13 @@ function showLoginRequired() {
 			console.error('Failed to start login flow:', error);
 		}
 	});
+
+	// Don't auto-hide - user needs to login to proceed
+	// setTimeout(() => {
+	// 	if (document.body.contains(message)) {
+	// 		message.remove();
+	// 	}
+	// }, 10000);
 }
 
 // Function to show subscription required message
@@ -68,26 +75,26 @@ function showSubscriptionRequired() {
 }
 
 async function authenticatedApiRequest(method, url, data = null) {
-	const token = await getAccessToken();
-
-	// Check if user is authenticated first
-	if (!token) {
-		showLoginRequired();
-		throw new Error('Authentication required');
-	}
-
-	const options = {
-		method,
-		headers: {
-			'Authorization': `Bearer ${token}`,
-			'Content-Type': 'application/json'
-		}
-	};
-	if (data) {
-		options.body = JSON.stringify(data);
-	}
-
 	try {
+		const token = await getAccessToken();
+
+		// If getAccessToken() returns null, it means auth flow failed completely
+		if (!token) {
+			showLoginRequired();
+			throw new Error('Authentication required');
+		}
+
+		const options = {
+			method,
+			headers: {
+				'Authorization': `Bearer ${token}`,
+				'Content-Type': 'application/json'
+			}
+		};
+		if (data) {
+			options.body = JSON.stringify(data);
+		}
+
 		const res = await fetch(url, options);
 
 		// Handle unauthorized specifically (this would be for subscription issues)
@@ -102,7 +109,12 @@ async function authenticatedApiRequest(method, url, data = null) {
 
 		return res.json();
 	} catch (error) {
-		// Re-throw the error so calling code can handle it
+		// If getAccessToken() threw an error (like during auth redirect), don't show login dialog
+		if (error.message === 'Authentication required') {
+			throw error;
+		}
+
+		// For other errors, re-throw
 		throw error;
 	}
 }

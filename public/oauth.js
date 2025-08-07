@@ -56,16 +56,32 @@ function getQueryParam(name) {
 
 async function startAuthFlow() {
 	try {
+		if (!oidcConfig) {
+			await fetchOIDCConfig();
+		}
+
 		const { codeVerifier, codeChallenge } = await generatePKCE();
 		sessionStorage.setItem('pkce_verifier', codeVerifier);
 
 		// Store the original URL to return to after auth
 		sessionStorage.setItem('auth_return_url', window.location.href);
 
-		// ... rest of the flow
+		const params = new URLSearchParams({
+			response_type: 'code',
+			client_id: config.clientId,
+			redirect_uri: config.redirectUri,
+			scope: config.scope,
+			code_challenge: codeChallenge,
+			code_challenge_method: 'S256'
+		});
+
+		const authUrl = `${oidcConfig.authorization_endpoint}?${params.toString()}`;
+
+		// This is the missing piece - actually redirect to login
+		window.location.href = authUrl;
+
 	} catch (error) {
 		console.error('Failed to start auth flow:', error);
-		// Show user-friendly error
 		showAuthError('Unable to start login process. Please try again.');
 	}
 }
