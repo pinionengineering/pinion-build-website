@@ -189,6 +189,63 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          <section className="bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-lg mt-8 transform rotate-1 relative border border-green-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+            <div className="absolute top-0 right-0 w-6 h-6 bg-green-500 border-l border-b border-green-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
+            <div className="px-8 py-10">
+              <h2 className="text-3xl font-bold text-center mb-6">Are you a developer, builder, maker, or doer?</h2>
+              <p className="text-xl text-center mb-8 text-green-100 max-w-3xl mx-auto">
+                Stop worrying about storage infrastructure. Pin your content to IPFS with enterprise-grade reliability, 
+                automatic redundancy, and global performance. Focus on building—let Pinion handle the rest.
+              </p>
+              <div className="text-center">
+                <a
+                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                  className="inline-block bg-white text-green-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-green-50 transition-colors shadow-lg"
+                >
+                  Start Pinning Now →
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-lg mt-8 transform -rotate-1 relative border border-blue-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+            <div className="absolute top-0 right-0 w-6 h-6 bg-blue-500 border-l border-b border-blue-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
+            <div className="px-8 py-10">
+              <h2 className="text-3xl font-bold text-center mb-6">Are you a wrangler of machines?</h2>
+              <p className="text-xl text-center mb-8 text-blue-100 max-w-3xl mx-auto">
+                Provide storage to the network and get paid for it. Run a Pinion minion to contribute IPFS storage 
+                and bandwidth to our global network. Simple setup, automated operations, reliable income.
+              </p>
+              <div className="text-center">
+                <a
+                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                  className="inline-block bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-50 transition-colors shadow-lg"
+                >
+                  Deploy a Minion →
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-gradient-to-br from-purple-600 to-violet-700 text-white rounded-lg mt-8 transform rotate-1 relative border border-purple-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+            <div className="absolute top-0 right-0 w-6 h-6 bg-purple-500 border-l border-b border-purple-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
+            <div className="px-8 py-10">
+              <h2 className="text-3xl font-bold text-center mb-6">Do you have a datacenter?</h2>
+              <p className="text-xl text-center mb-8 text-purple-100 max-w-3xl mx-auto">
+                Maximize your rackspace ROI. Partner with Pinion to turn idle capacity into revenue streams. 
+                We provide the software, you provide the space—together we build the future of decentralized storage.
+              </p>
+              <div className="text-center">
+                <a
+                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                  className="inline-block bg-white text-purple-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-purple-50 transition-colors shadow-lg"
+                >
+                  Partner with Us →
+                </a>
+              </div>
+            </div>
+          </section>
         </article>
       </main>
 
