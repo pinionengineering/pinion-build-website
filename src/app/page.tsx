@@ -200,7 +200,7 @@ export default function Home() {
               </p>
               <div className="text-center">
                 <a
-                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                  href="/developers"
                   className="inline-block bg-white text-green-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-green-50 transition-colors shadow-lg"
                 >
                   Start Pinning Now →
@@ -219,7 +219,7 @@ export default function Home() {
               </p>
               <div className="text-center">
                 <a
-                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                  href="/minions"
                   className="inline-block bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-50 transition-colors shadow-lg"
                 >
                   Deploy a Minion →
