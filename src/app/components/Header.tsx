@@ -1,9 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { UserManager } from 'oidc-client-ts';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  const handleLogin = async () => {
+    try {
+      const userManager = new UserManager({
+        authority: "https://hydrogen.pinion.build/authen",
+        client_id: "R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq",
+        redirect_uri: `${window.location.origin}/auth/callback`,
+        scope: "openid email profile user_hint offline_access",
+        response_type: "code",
+      });
+      
+      await userManager.signinRedirect();
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
 
   return (
     <header className="bg-slate-800 shadow-2xl border-b border-slate-600 relative z-20" role="banner">
@@ -48,12 +65,12 @@ export default function Header() {
               Technology
             </a>
             <div className="border-l border-slate-600 pl-6 space-x-4">
-              <a
-                href="/auth/login"
+              <button
+                onClick={handleLogin}
                 className="text-slate-300 hover:text-white transition-colors duration-200"
               >
                 Login
-              </a>
+              </button>
               <a
                 href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
@@ -123,13 +140,15 @@ export default function Header() {
               Technology
             </a>
             <div className="border-t border-slate-600 pt-2 mt-2">
-              <a
-                href="/auth/login"
-                className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleLogin();
+                }}
+                className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 w-full text-left"
               >
                 Login
-              </a>
+              </button>
               <a
                 href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
                 className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200"
