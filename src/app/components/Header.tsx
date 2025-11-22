@@ -9,7 +9,7 @@ export default function Header() {
   const handleLogin = async () => {
     try {
       const userManager = new UserManager({
-        authority: "https://hydrogen.pinion.build/authen",
+        authority: "https://hydrogen.pinion.build/authen/application/o/pinion-cli",
         client_id: "R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq",
         redirect_uri: `${window.location.origin}/auth/callback`,
         scope: "openid email profile user_hint offline_access",
