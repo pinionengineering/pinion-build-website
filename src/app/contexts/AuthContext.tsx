@@ -96,14 +96,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const manager = getUserManager()
       if (manager) {
-        await manager.removeUser()
+        // Use OIDC logout which will hit the auto-discovered logout endpoint
+        await manager.signoutRedirect({
+          post_logout_redirect_uri: window.location.origin
+        })
+      } else {
+        // Fallback if manager isn't available
+        localStorage.removeItem("user")
+        setUser(null)
+        window.location.href = "/"
       }
+    } catch (error) {
+      console.error("Logout error:", error)
+      // Fallback to local logout if OIDC logout fails
       localStorage.removeItem("user")
       setUser(null)
       window.location.href = "/"
-    } catch (error) {
-      console.error("Logout error:", error)
-      throw error
     }
   }
 
