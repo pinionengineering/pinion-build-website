@@ -1,26 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { UserManager } from 'oidc-client-ts';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  const handleLogin = async () => {
-    try {
-      const userManager = new UserManager({
-        authority: "https://hydrogen.pinion.build/authen/application/o/pinion-cli",
-        client_id: "R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq",
-        redirect_uri: `${window.location.origin}/auth/callback`,
-        scope: "openid email profile user_hint offline_access",
-        response_type: "code",
-      });
-      
-      await userManager.signinRedirect();
-    } catch (error) {
-      console.error("Login error:", error);
-    }
-  };
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, isAuthenticated, login, logout } = useAuth();
 
   return (
     <header className="bg-slate-800 shadow-2xl border-b border-slate-600 relative z-20" role="banner">
@@ -64,19 +50,58 @@ export default function Header() {
             >
               Technology
             </a>
-            <div className="border-l border-slate-600 pl-6 space-x-4">
-              <button
-                onClick={handleLogin}
-                className="text-slate-300 hover:text-white transition-colors duration-200"
-              >
-                Login
-              </button>
-              <a
-                href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
-              >
-                Sign Up
-              </a>
+            <div className="border-l border-slate-600 pl-6">
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors duration-200"
+                  >
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      {user?.profile.picture ? (
+                        <img src={user.profile.picture} alt="Profile" className="w-8 h-8 rounded-full" />
+                      ) : (
+                        <span className="text-white text-sm font-medium">
+                          {user?.profile.name?.charAt(0)?.toUpperCase() || user?.profile.email?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      )}
+                    </div>
+                    <span>{user?.profile.name || user?.profile.email || 'User'}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <button
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          logout();
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-x-4">
+                  <button
+                    onClick={login}
+                    className="text-slate-300 hover:text-white transition-colors duration-200"
+                  >
+                    Login
+                  </button>
+                  <a
+                    href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    Sign Up
+                  </a>
+                </div>
+              )}
             </div>
           </nav>
 
@@ -140,22 +165,50 @@ export default function Header() {
               Technology
             </a>
             <div className="border-t border-slate-600 pt-2 mt-2">
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  handleLogin();
-                }}
-                className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 w-full text-left"
-              >
-                Login
-              </button>
-              <a
-                href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
-                className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign Up
-              </a>
+              {isAuthenticated ? (
+                <div>
+                  <div className="flex items-center px-3 py-2 text-slate-300">
+                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                      {user?.profile.picture ? (
+                        <img src={user.profile.picture} alt="Profile" className="w-6 h-6 rounded-full" />
+                      ) : (
+                        <span className="text-white text-xs font-medium">
+                          {user?.profile.name?.charAt(0)?.toUpperCase() || user?.profile.email?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-sm">{user?.profile.name || user?.profile.email || 'User'}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      logout();
+                    }}
+                    className="block w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 text-left"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      login();
+                    }}
+                    className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 w-full text-left"
+                  >
+                    Login
+                  </button>
+                  <a
+                    href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
+                    className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign Up
+                  </a>
+                </div>
+              )}
             </div>
           </nav>
         </div>
