@@ -74,6 +74,13 @@ export default function Header() {
                   
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <a
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        My Profile
+                      </a>
                       <button
                         onClick={() => {
                           setIsUserMenuOpen(false);
@@ -179,6 +186,13 @@ export default function Header() {
                     </div>
                     <span className="text-sm">{user?.profile.name || user?.profile.email || 'User'}</span>
                   </div>
+                  <a
+                    href="/profile"
+                    className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    My Profile
+                  </a>
                   <button
                     onClick={() => {
                       setIsMenuOpen(false);

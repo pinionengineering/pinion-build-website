@@ -2,17 +2,18 @@
 
 import { useEffect, useState } from "react"
 import { UserManager } from "oidc-client-ts"
+import { AUTH_CONFIG } from "@/config/app.config"
 
 let userManager: UserManager | null = null;
 
 function getUserManager() {
   if (!userManager && typeof window !== "undefined") {
     userManager = new UserManager({
-      authority: "https://hydrogen.pinion.build/authen/application/o/pinion-cli",
-      client_id: "R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq",
+      authority: AUTH_CONFIG.authority,
+      client_id: AUTH_CONFIG.clientId,
       redirect_uri: `${window.location.origin}/auth/callback`,
-      scope: "openid email profile user_hint offline_access",
-      response_type: "code",
+      scope: AUTH_CONFIG.scope,
+      response_type: AUTH_CONFIG.responseType,
     });
   }
   return userManager;

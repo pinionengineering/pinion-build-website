@@ -1,0 +1,108 @@
+import { API_CONFIG } from '@/config/app.config';
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public response?: any
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+interface FetchOptions extends RequestInit {
+  requireAuth?: boolean;
+}
+
+export class ApiClient {
+  private baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  private async getAuthToken(): Promise<string | null> {
+    // Access localStorage (client-side only)
+    if (typeof window === 'undefined') return null;
+
+    try {
+      const userJson = localStorage.getItem('user');
+      if (!userJson) return null;
+
+      const user = JSON.parse(userJson);
+      return user.accessToken || null;
+    } catch {
+      return null;
+    }
+  }
+
+  async fetch<T>(
+    path: string,
+    options: FetchOptions = {}
+  ): Promise<T> {
+    const { requireAuth = true, headers = {}, ...fetchOptions } = options;
+
+    // Build headers
+    const requestHeaders: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...headers,
+    };
+
+    // Add auth if required
+    if (requireAuth) {
+      const token = await this.getAuthToken();
+      if (!token) {
+        throw new ApiError('Authentication required', 401);
+      }
+      requestHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Make request
+    const url = `${this.baseUrl}${path}`;
+    const response = await fetch(url, {
+      ...fetchOptions,
+      headers: requestHeaders,
+    });
+
+    // Handle errors
+    if (!response.ok) {
+      const errorBody = await response.text();
+      let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+      try {
+        const errorJson = JSON.parse(errorBody);
+        errorMessage = errorJson.error || errorJson.message || errorMessage;
+      } catch {
+        // Use default error message
+      }
+
+      throw new ApiError(errorMessage, response.status, errorBody);
+    }
+
+    // Parse response
+    const contentType = response.headers.get('content-type');
+    if (contentType?.includes('application/json')) {
+      return response.json();
+    }
+
+    return response.text() as any;
+  }
+
+  // Convenience methods
+  async get<T>(path: string, options?: FetchOptions): Promise<T> {
+    return this.fetch<T>(path, { ...options, method: 'GET' });
+  }
+
+  async post<T>(path: string, body?: any, options?: FetchOptions): Promise<T> {
+    return this.fetch<T>(path, {
+      ...options,
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  }
+}
+
+// Export configured clients
+export const uploadApi = new ApiClient(API_CONFIG.upload.baseUrl);
+export const paymentsApi = new ApiClient(API_CONFIG.payments.baseUrl);
