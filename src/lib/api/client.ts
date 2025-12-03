@@ -1,4 +1,5 @@
 import { API_CONFIG } from '@/config/app.config';
+import { clearAuthOnError } from './auth-handler';
 
 export class ApiError extends Error {
   constructor(
@@ -44,9 +45,9 @@ export class ApiClient {
     const { requireAuth = true, headers = {}, ...fetchOptions } = options;
 
     // Build headers
-    const requestHeaders: HeadersInit = {
+    const requestHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...headers,
+      ...headers as Record<string, string>,
     };
 
     // Add auth if required
@@ -75,6 +76,11 @@ export class ApiClient {
         errorMessage = errorJson.error || errorJson.message || errorMessage;
       } catch {
         // Use default error message
+      }
+
+      // If 401, clear auth state
+      if (response.status === 401) {
+        clearAuthOnError();
       }
 
       throw new ApiError(errorMessage, response.status, errorBody);

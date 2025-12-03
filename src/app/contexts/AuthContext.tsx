@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react"
 import { UserManager } from "oidc-client-ts"
 import { AUTH_CONFIG } from "@/config/app.config"
+import { setAuthClearCallback } from "@/lib/api/auth-handler"
 
 interface AuthUser {
   accessToken: string
@@ -21,6 +22,7 @@ interface AuthContextType {
   isLoading: boolean
   login: () => Promise<void>
   logout: () => Promise<void>
+  clearAuth: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -44,6 +46,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  const clearAuth = () => {
+    // Silent auth clear without redirect (for API 401 errors)
+    localStorage.removeItem("user")
+    setUser(null)
+  }
+
+  // Register auth clear callback for API client
+  useEffect(() => {
+    setAuthClearCallback(clearAuth)
+  }, [])
+
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -61,16 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             profile: oidcUser.profile
           })
         } else {
-          const storedUser = localStorage.getItem("user")
-          if (storedUser) {
-            try {
-              const parsedUser = JSON.parse(storedUser)
-              setUser(parsedUser)
-            } catch (error) {
-              console.error("Failed to parse stored user:", error)
-              localStorage.removeItem("user")
-            }
-          }
+          // Token expired or not found - clear everything
+          localStorage.removeItem("user")
+          setUser(null)
         }
       } catch (error) {
         console.error("Failed to load user:", error)
@@ -98,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clear local state immediately
       localStorage.removeItem("user")
       setUser(null)
-      
+
       const manager = getUserManager()
       if (manager) {
         await manager.removeUser()
@@ -123,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     login,
     logout,
+    clearAuth,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
