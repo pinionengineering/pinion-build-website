@@ -1,9 +1,11 @@
 'use client';
 
 import { useOfferings } from '@/hooks/useOfferings';
+import { useSubscriptionStatus } from '@/hooks/useSubscriptionStatus';
 
 export default function BillingSection() {
   const { data: offerings, loading, error } = useOfferings();
+  const { data: subscriptionStatus, loading: statusLoading, error: statusError } = useSubscriptionStatus();
 
   return (
     <section className="bg-slate-800 rounded-lg shadow-lg p-6 border border-slate-700">
@@ -14,10 +16,10 @@ export default function BillingSection() {
         </p>
       </div>
 
-      {loading && (
+      {(loading || statusLoading) && (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
-          <span className="ml-3 text-slate-300 font-medium">Loading plans...</span>
+          <span className="ml-3 text-slate-300 font-medium">Loading...</span>
         </div>
       )}
 
@@ -37,12 +39,42 @@ export default function BillingSection() {
         </div>
       )}
 
-      {!loading && !error && offerings && (
+      {!loading && !statusLoading && !error && offerings && (
         <div>
+          {/* Current Subscription Status */}
+          {subscriptionStatus && (
+            <div className="mb-6 bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+              <h3 className="text-white font-semibold mb-2">Current Subscription</h3>
+
+              {subscriptionStatus.isCustomPlan ? (
+                <>
+                  <p className="text-slate-300">You have an active custom plan</p>
+                  <p className="text-slate-400 text-sm">
+                    View your subscription details in the billing portal
+                  </p>
+                </>
+              ) : (
+                <p className="text-slate-300">
+                  You're on the <strong>{subscriptionStatus.currentOffering?.name}</strong> plan
+                </p>
+              )}
+
+              {subscriptionStatus.status === 'past_due' && (
+                <div className="mt-2 flex items-center text-yellow-400 text-sm">
+                  <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  Payment issue - please update billing information
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {offerings.map((offering, index) => {
-              // Highlight the middle plan (Pinnacle) as recommended
-              const isRecommended = index === 1;
+              // Highlight the middle plan (Pinnacle) as recommended (check by name for stability)
+              const isRecommended = offering.name === "Pinnacle";
+              const isCurrentPlan = subscriptionStatus?.currentOffering?.id === offering.id;
 
               return (
                 <div
@@ -53,7 +85,12 @@ export default function BillingSection() {
                       : 'border-slate-600 hover:border-blue-400'
                   }`}
                 >
-                  {isRecommended && (
+                  {isCurrentPlan && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                      CURRENT PLAN
+                    </div>
+                  )}
+                  {!isCurrentPlan && isRecommended && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                       POPULAR
                     </div>
@@ -104,15 +141,20 @@ export default function BillingSection() {
 
                   <button
                     className={`w-full px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                      isRecommended
+                      isCurrentPlan
+                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                        : isRecommended
                         ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl'
                         : 'bg-slate-600 hover:bg-blue-600 text-white'
                     }`}
+                    disabled={isCurrentPlan}
                     onClick={() => {
-                      window.location.href = `https://hydrogen.pinion.build/payments/web/checkout?offer_id=${offering.id}`;
+                      if (!isCurrentPlan) {
+                        window.location.href = `https://hydrogen.pinion.build/payments/web/checkout?offer_id=${offering.id}`;
+                      }
                     }}
                   >
-                    Select {offering.name}
+                    {isCurrentPlan ? 'Current Plan' : `Select ${offering.name}`}
                   </button>
                 </div>
               );

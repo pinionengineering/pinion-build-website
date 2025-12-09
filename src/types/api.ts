@@ -31,6 +31,14 @@ export interface OfferingDisplay {
   items?: Record<string, string>;
 }
 
+export interface SubscriptionStatus {
+  hasActiveSubscription: boolean;
+  currentOffering?: OfferingDisplay;
+  subscriptionId: string;
+  status: string;
+  isCustomPlan: boolean;
+}
+
 // API Error Types
 export interface ApiErrorResponse {
   error: string;
