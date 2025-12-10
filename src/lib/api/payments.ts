@@ -41,11 +41,13 @@ function transformSubscriptionStatus(apiStatus: SubscriptionStatusApiResponse): 
 export const paymentsService = {
   offerings: {
     getAll: async () => {
+      // /offerings is public, no auth required
       const apiOfferings = await paymentsApi.get<OfferingApiResponse[]>('/offerings', { requireAuth: false });
       return apiOfferings.map(transformOffering);
     },
 
     getById: async (offerId: string) => {
+      // /offerings is public, no auth required
       const apiOffering = await paymentsApi.get<OfferingApiResponse>(`/offerings?offer_id=${offerId}`, { requireAuth: false });
       return transformOffering(apiOffering);
     },
@@ -53,8 +55,9 @@ export const paymentsService = {
 
   subscriptionStatus: {
     get: async () => {
+      // Use JWT-protected API endpoint (web UI has JWT in localStorage from OAuth flow)
       const apiResponse = await paymentsApi.get<SubscriptionStatusApiResponse>(
-        '/subscription-status',
+        '/api/v1/subscription-status',
         { requireAuth: true }
       );
       return transformSubscriptionStatus(apiResponse);
