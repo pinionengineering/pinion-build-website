@@ -150,7 +150,7 @@ export default function BillingSection() {
                     disabled={isCurrentPlan}
                     onClick={() => {
                       if (!isCurrentPlan) {
-                        window.location.href = `https://hydrogen.pinion.build/payments/web/checkout?offer_id=${offering.id}`;
+                        window.open(`https://hydrogen.pinion.build/payments/web/checkout?offer_id=${offering.id}`, '_blank');
                       }
                     }}
                   >
@@ -186,6 +186,8 @@ export default function BillingSection() {
               </div>
               <a
                 href="https://hydrogen.pinion.build/payments/web/portal"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="ml-4 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors whitespace-nowrap"
               >
                 Billing Portal
