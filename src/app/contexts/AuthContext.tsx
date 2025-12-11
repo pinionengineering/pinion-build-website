@@ -68,11 +68,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const oidcUser = await manager.getUser()
         if (oidcUser && !oidcUser.expired) {
-          setUser({
+          const userData = {
             accessToken: oidcUser.access_token,
             refreshToken: oidcUser.refresh_token,
             profile: oidcUser.profile
-          })
+          }
+          setUser(userData)
+          // Sync to localStorage for API client
+          localStorage.setItem("user", JSON.stringify(userData))
         } else {
           // Token expired or not found - clear everything
           localStorage.removeItem("user")
