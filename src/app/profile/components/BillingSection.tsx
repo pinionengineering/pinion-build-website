@@ -70,8 +70,19 @@ export default function BillingSection() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {offerings.map((offering, index) => {
+          {/* Show only current offering if user has subscription, otherwise show all */}
+          {(() => {
+            const displayedOfferings = subscriptionStatus
+              ? offerings.filter(offering => offering.id === subscriptionStatus.currentOffering?.id)
+              : offerings;
+
+            return (
+              <div className={`grid gap-6 mb-8 ${
+                displayedOfferings.length === 1
+                  ? 'grid-cols-1 max-w-md mx-auto'
+                  : 'grid-cols-1 lg:grid-cols-3'
+              }`}>
+                {displayedOfferings.map((offering, index) => {
               // Highlight the middle plan (Pinnacle) as recommended (check by name for stability)
               const isRecommended = offering.name === "Pinnacle";
               const isCurrentPlan = subscriptionStatus?.currentOffering?.id === offering.id;
@@ -159,7 +170,9 @@ export default function BillingSection() {
                 </div>
               );
             })}
-          </div>
+              </div>
+            );
+          })()}
 
           <div className="bg-gradient-to-r from-slate-700 to-slate-800 rounded-lg p-6 border border-slate-600">
             <div className="flex items-start justify-between">
