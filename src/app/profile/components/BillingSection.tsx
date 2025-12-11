@@ -153,19 +153,20 @@ export default function BillingSection() {
                   <button
                     className={`w-full px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
                       isCurrentPlan
-                        ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
                         : isRecommended
                         ? 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl'
                         : 'bg-slate-600 hover:bg-blue-600 text-white'
                     }`}
-                    disabled={isCurrentPlan}
                     onClick={() => {
-                      if (!isCurrentPlan) {
+                      if (isCurrentPlan) {
+                        window.open('https://hydrogen.pinion.build/payments/web/portal', '_blank');
+                      } else {
                         window.open(`https://hydrogen.pinion.build/payments/web/checkout?offer_id=${offering.id}`, '_blank');
                       }
                     }}
                   >
-                    {isCurrentPlan ? 'Current Plan' : `Select ${offering.name}`}
+                    {isCurrentPlan ? 'Manage Subscription' : `Select ${offering.name}`}
                   </button>
                 </div>
               );
@@ -174,42 +175,45 @@ export default function BillingSection() {
             );
           })()}
 
-          <div className="bg-gradient-to-r from-slate-700 to-slate-800 rounded-lg p-6 border border-slate-600">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start">
-                <svg
-                  className="w-6 h-6 text-blue-400 mr-3 flex-shrink-0 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-                <div>
-                  <h3 className="text-white font-semibold mb-1">Manage Your Subscription</h3>
-                  <p className="text-slate-400 text-sm">
-                    Update billing information, view invoices, or change your plan
-                  </p>
+          {/* Only show manage subscription section if user has no active subscription */}
+          {!subscriptionStatus && (
+            <div className="bg-gradient-to-r from-slate-700 to-slate-800 rounded-lg p-6 border border-slate-600">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start">
+                  <svg
+                    className="w-6 h-6 text-blue-400 mr-3 flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                    />
+                  </svg>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">Manage Your Subscription</h3>
+                    <p className="text-slate-400 text-sm">
+                      Update billing information, view invoices, or change your plan
+                    </p>
+                  </div>
                 </div>
+                <a
+                  href="https://hydrogen.pinion.build/payments/web/portal"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-4 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors whitespace-nowrap"
+                >
+                  Billing Portal
+                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
               </div>
-              <a
-                href="https://hydrogen.pinion.build/payments/web/portal"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-4 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors whitespace-nowrap"
-              >
-                Billing Portal
-                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
             </div>
-          </div>
+          )}
         </div>
       )}
     </section>
