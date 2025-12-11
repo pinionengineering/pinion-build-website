@@ -1,5 +1,7 @@
 import { API_CONFIG } from '@/config/app.config';
 import { clearAuthOnError } from './auth-handler';
+import { UserManager } from 'oidc-client-ts';
+import { AUTH_CONFIG } from '@/config/app.config';
 
 export class ApiError extends Error {
   constructor(
@@ -16,6 +18,21 @@ interface FetchOptions extends RequestInit {
   requireAuth?: boolean;
 }
 
+let userManager: UserManager | null = null;
+
+function getUserManager() {
+  if (!userManager && typeof window !== 'undefined') {
+    userManager = new UserManager({
+      authority: AUTH_CONFIG.authority,
+      client_id: AUTH_CONFIG.clientId,
+      redirect_uri: `${window.location.origin}/auth/callback`,
+      scope: AUTH_CONFIG.scope,
+      response_type: AUTH_CONFIG.responseType,
+    });
+  }
+  return userManager;
+}
+
 export class ApiClient {
   private baseUrl: string;
 
@@ -24,15 +41,19 @@ export class ApiClient {
   }
 
   private async getAuthToken(): Promise<string | null> {
-    // Access localStorage (client-side only)
+    // Get fresh token from UserManager (handles automatic refresh)
     if (typeof window === 'undefined') return null;
 
     try {
-      const userJson = localStorage.getItem('user');
-      if (!userJson) return null;
+      const manager = getUserManager();
+      if (!manager) return null;
 
-      const user = JSON.parse(userJson);
-      return user.accessToken || null;
+      const user = await manager.getUser();
+      if (!user || user.expired) {
+        return null;
+      }
+
+      return user.access_token;
     } catch {
       return null;
     }

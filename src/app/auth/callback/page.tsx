@@ -31,14 +31,8 @@ export default function CallbackPage() {
         
         const user = await manager.signinRedirectCallback()
         console.log("User authenticated:", user)
-        
-        // Store user info in localStorage for now
-        localStorage.setItem("user", JSON.stringify({
-          accessToken: user.access_token,
-          refreshToken: user.refresh_token,
-          profile: user.profile
-        }))
-        
+
+        // UserManager automatically stores the user - no need for manual localStorage
         // Redirect to home page
         window.location.href = "/"
       } catch (err) {
