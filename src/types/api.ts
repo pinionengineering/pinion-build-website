@@ -39,6 +39,39 @@ export interface SubscriptionStatus {
   isCustomPlan: boolean;
 }
 
+// Pinning Service Types
+export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed';
+
+export interface Pin {
+  cid: string;
+  name?: string;
+  origins?: string[];
+  meta?: Record<string, string>;
+}
+
+export interface PinStatusResponse {
+  requestid: string;
+  status: PinStatus;
+  created: string; // ISO 8601 timestamp
+  pin: Pin;
+  delegates: string[];
+  info?: Record<string, string>;
+}
+
+export interface PinResults {
+  count: number;
+  results: PinStatusResponse[];
+}
+
+export interface PinFilters {
+  cid?: string;
+  name?: string;
+  status?: PinStatus;
+  before?: string; // ISO 8601
+  after?: string;  // ISO 8601
+  limit?: number;
+}
+
 // API Error Types
 export interface ApiErrorResponse {
   error: string;

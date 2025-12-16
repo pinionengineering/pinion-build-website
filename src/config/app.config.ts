@@ -9,6 +9,9 @@ export const API_CONFIG = {
   payments: {
     baseUrl: 'https://hydrogen.pinion.build/payments',
   },
+  pinning: {
+    baseUrl: 'https://hydrogen.pinion.build/pinning',
+  },
 } as const;
 
 // OAuth/OIDC Configuration

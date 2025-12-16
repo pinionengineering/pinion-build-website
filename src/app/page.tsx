@@ -17,8 +17,8 @@ export default function Home() {
         }}></div>
       </div>
       
-      {/* Decorative gears */}
-      <div className="absolute top-20 right-20 opacity-10">
+      {/* Decorative gears - hidden on mobile */}
+      <div className="hidden lg:block absolute top-20 right-20 opacity-10">
         <svg width="120" height="120" viewBox="0 0 120 120" className="text-blue-400">
           <circle cx="60" cy="60" r="45" fill="none" stroke="currentColor" strokeWidth="2"/>
           <g stroke="currentColor" strokeWidth="2" fill="none">
@@ -31,8 +31,8 @@ export default function Home() {
           </g>
         </svg>
       </div>
-      
-      <div className="absolute bottom-40 left-10 opacity-10">
+
+      <div className="hidden lg:block absolute bottom-40 left-10 opacity-10">
         <svg width="80" height="80" viewBox="0 0 80 80" className="text-blue-400">
           <circle cx="40" cy="40" r="30" fill="none" stroke="currentColor" strokeWidth="2"/>
           <g stroke="currentColor" strokeWidth="2" fill="none">
@@ -45,25 +45,11 @@ export default function Home() {
           </g>
         </svg>
       </div>
-      
-      <div className="absolute top-1/2 right-10 opacity-10">
-        <svg width="60" height="60" viewBox="0 0 60 60" className="text-blue-400">
-          <circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-          <g stroke="currentColor" strokeWidth="1.5" fill="none">
-            {Array.from({length: 10}).map((_, i) => (
-              <g key={i} transform={`rotate(${i * 36} 30 30)`}>
-                <rect x="29" y="8" width="2" height="6"/>
-              </g>
-            ))}
-            <circle cx="30" cy="30" r="8" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-          </g>
-        </svg>
-      </div>
       <Header />
 
       <main className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8" role="main">
         <article className="relative z-10">
-          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mb-8 transform -rotate-1 relative" aria-labelledby="hero-heading" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mb-12 transform -rotate-0.5 relative" aria-labelledby="hero-heading" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
             {/* Paper corner fold */}
             <div className="absolute top-0 right-0 w-6 h-6 bg-slate-200 border-l border-b border-slate-300 transform rotate-45 translate-x-3 -translate-y-3"></div>
             <div className="px-4 py-5 sm:p-6">
@@ -71,29 +57,29 @@ export default function Home() {
             </div>
           </section>
 
-          <aside className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white p-8 rounded-lg shadow-2xl transform rotate-1 relative border border-blue-600" aria-labelledby="beta-announcement" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+          <aside className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white p-8 rounded-lg shadow-2xl transform rotate-0.5 relative border border-blue-600" aria-labelledby="beta-announcement" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
             {/* Paper corner fold */}
             <div className="absolute top-0 right-0 w-6 h-6 bg-blue-600 border-l border-b border-blue-500 transform rotate-45 translate-x-3 -translate-y-3"></div>
             <BetaCountdown />
           </aside>
 
-          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mt-8 transform rotate-1 relative" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mt-12 transform rotate-0.5 relative" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
             {/* Paper corner fold */}
             <div className="absolute top-0 right-0 w-6 h-6 bg-slate-200 border-l border-b border-slate-300 transform rotate-45 translate-x-3 -translate-y-3"></div>
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
-                <p className="text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
                   The complete IPFS infrastructure platform bridging traditional and decentralized web. From enterprise pinning services and GitHub CI/CD integration to consumer mobile apps and community-operated minion networks - Pinion makes decentralized storage accessible, reliable, and scalable for everyone.
                 </p>
               </div>
             </div>
           </section>
 
-          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mt-8 transform -rotate-1 relative" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+          <section className="bg-slate-100 border border-slate-300 shadow-2xl rounded-lg mt-12 transform -rotate-0.5 relative" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
             {/* Paper corner fold */}
             <div className="absolute top-0 right-0 w-6 h-6 bg-slate-200 border-l border-b border-slate-300 transform rotate-45 translate-x-3 -translate-y-3"></div>
             <div className="px-4 py-5 sm:p-6">
-              <h2 className="text-3xl font-bold text-slate-800 text-center mb-8">Why Developers Choose Pinion</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center mb-8">Why Developers Choose Pinion</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="flex items-start">
@@ -190,59 +176,53 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-lg mt-8 transform rotate-1 relative border border-green-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
-            <div className="absolute top-0 right-0 w-6 h-6 bg-green-500 border-l border-b border-green-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
-            <div className="px-8 py-10">
-              <h2 className="text-3xl font-bold text-center mb-6">Are you a developer, builder, maker, or doer?</h2>
-              <p className="text-xl text-center mb-8 text-green-100 max-w-3xl mx-auto">
-                Stop worrying about storage infrastructure. Pin your content to IPFS with enterprise-grade reliability, 
-                automatic redundancy, and global performance. Focus on building—let Pinion handle the rest.
-              </p>
-              <div className="text-center">
-                <a
-                  href="/developers"
-                  className="inline-block bg-white text-green-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-green-50 transition-colors shadow-lg"
-                >
-                  Start Pinning Now →
-                </a>
-              </div>
-            </div>
-          </section>
-
-          <section className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-lg mt-8 transform -rotate-1 relative border border-blue-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
+          <section className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white rounded-lg mt-12 transform rotate-0.5 relative border border-blue-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
             <div className="absolute top-0 right-0 w-6 h-6 bg-blue-500 border-l border-b border-blue-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
-            <div className="px-8 py-10">
-              <h2 className="text-3xl font-bold text-center mb-6">Are you a wrangler of machines?</h2>
-              <p className="text-xl text-center mb-8 text-blue-100 max-w-3xl mx-auto">
-                Provide storage to the network and get paid for it. Run a Pinion minion to contribute IPFS storage 
-                and bandwidth to our global network. Simple setup, automated operations, reliable income.
-              </p>
-              <div className="text-center">
-                <a
-                  href="/minions"
-                  className="inline-block bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-50 transition-colors shadow-lg"
-                >
-                  Deploy a Minion →
-                </a>
-              </div>
-            </div>
-          </section>
+            <div className="px-6 sm:px-8 py-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Get Started with Pinion</h2>
 
-          <section className="bg-gradient-to-br from-purple-600 to-violet-700 text-white rounded-lg mt-8 transform rotate-1 relative border border-purple-500" style={{boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)'}}>
-            <div className="absolute top-0 right-0 w-6 h-6 bg-purple-500 border-l border-b border-purple-400 transform rotate-45 translate-x-3 -translate-y-3"></div>
-            <div className="px-8 py-10">
-              <h2 className="text-3xl font-bold text-center mb-6">Do you have a datacenter?</h2>
-              <p className="text-xl text-center mb-8 text-purple-100 max-w-3xl mx-auto">
-                Maximize your rackspace ROI. Partner with Pinion to turn idle capacity into revenue streams. 
-                We provide the software, you provide the space—together we build the future of decentralized storage.
-              </p>
-              <div className="text-center">
-                <a
-                  href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
-                  className="inline-block bg-white text-purple-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-purple-50 transition-colors shadow-lg"
-                >
-                  Partner with Us →
-                </a>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {/* Developers */}
+                <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+                  <h3 className="text-xl font-bold mb-3">For Developers</h3>
+                  <p className="text-blue-100 mb-4 text-sm">
+                    Enterprise-grade IPFS pinning with GitHub integration
+                  </p>
+                  <a
+                    href="/developers"
+                    className="inline-block bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors w-full text-center"
+                  >
+                    Start Pinning →
+                  </a>
+                </div>
+
+                {/* Minion Operators */}
+                <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+                  <h3 className="text-xl font-bold mb-3">Run a Minion</h3>
+                  <p className="text-blue-100 mb-4 text-sm">
+                    Earn by providing storage to the network
+                  </p>
+                  <a
+                    href="/minions"
+                    className="inline-block bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors w-full text-center"
+                  >
+                    Deploy Minion →
+                  </a>
+                </div>
+
+                {/* Enterprise */}
+                <div className="bg-white/10 backdrop-blur rounded-lg p-6 border border-white/20">
+                  <h3 className="text-xl font-bold mb-3">Enterprise Solutions</h3>
+                  <p className="text-blue-100 mb-4 text-sm">
+                    Custom infrastructure for datacenters
+                  </p>
+                  <a
+                    href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program.%0A%0AThank you!"
+                    className="inline-block bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors w-full text-center"
+                  >
+                    Partner with Us →
+                  </a>
+                </div>
               </div>
             </div>
           </section>

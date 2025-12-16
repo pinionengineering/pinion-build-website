@@ -133,3 +133,4 @@ export class ApiClient {
 // Export configured clients
 export const uploadApi = new ApiClient(API_CONFIG.upload.baseUrl);
 export const paymentsApi = new ApiClient(API_CONFIG.payments.baseUrl);
+export const pinningApi = new ApiClient(API_CONFIG.pinning.baseUrl);

@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, isAuthenticated, login, logout } = useAuth();
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
 
   return (
     <header className="bg-slate-800 shadow-2xl border-b border-slate-600 relative z-20" role="banner">
@@ -22,34 +26,46 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-2" role="navigation" aria-label="Main navigation">
             <a
               href="/"
-              className="text-slate-300 hover:text-white hover:bg-slate-700/50 px-3 py-2 rounded-md transition-all duration-200 border-b-2 border-transparent hover:border-blue-400"
+              className={`px-3 py-2 rounded-md transition-all duration-200 border-b-2 ${
+                isActive('/')
+                  ? 'border-blue-400 text-white bg-slate-700/50'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700/50 hover:border-blue-400'
+              }`}
             >
               Home
             </a>
             <a
               href="/developers"
-              className="text-slate-300 hover:text-white hover:bg-slate-700/50 px-3 py-2 rounded-md transition-all duration-200 border-b-2 border-transparent hover:border-blue-400"
+              className={`px-3 py-2 rounded-md transition-all duration-200 border-b-2 ${
+                isActive('/developers')
+                  ? 'border-blue-400 text-white bg-slate-700/50'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700/50 hover:border-blue-400'
+              }`}
             >
-              For Developers
-            </a>
-            <a
-              href="/minions"
-              className="text-slate-300 hover:text-white hover:bg-slate-700/50 px-3 py-2 rounded-md transition-all duration-200 border-b-2 border-transparent hover:border-blue-400"
-            >
-              Run a Minion
+              Developers
             </a>
             <a
               href="/docs"
-              className="text-slate-300 hover:text-white hover:bg-slate-700/50 px-3 py-2 rounded-md transition-all duration-200 border-b-2 border-transparent hover:border-blue-400"
+              className={`px-3 py-2 rounded-md transition-all duration-200 border-b-2 ${
+                isActive('/docs')
+                  ? 'border-blue-400 text-white bg-slate-700/50'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700/50 hover:border-blue-400'
+              }`}
             >
               Documentation
             </a>
-            <a
-              href="/technology"
-              className="text-slate-300 hover:text-white hover:bg-slate-700/50 px-3 py-2 rounded-md transition-all duration-200 border-b-2 border-transparent hover:border-blue-400"
-            >
-              Technology
-            </a>
+            {isAuthenticated && (
+              <a
+                href="/dashboard"
+                className={`px-3 py-2 rounded-md transition-all duration-200 border-b-2 ${
+                  isActive('/dashboard')
+                    ? 'border-blue-400 text-white bg-slate-700/50'
+                    : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700/50 hover:border-blue-400'
+                }`}
+              >
+                Dashboard
+              </a>
+            )}
             <div className="border-l border-slate-600 pl-6">
               {isAuthenticated ? (
                 <div className="relative">
@@ -74,6 +90,13 @@ export default function Header() {
                   
                   {isUserMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <a
+                        href="/dashboard"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        Dashboard
+                      </a>
                       <a
                         href="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -138,39 +161,50 @@ export default function Header() {
           <nav className="px-4 pt-2 pb-3 space-y-1" role="navigation" aria-label="Mobile navigation">
             <a
               href="/"
-              className="flex items-center px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-all duration-200 border-l-4 border-transparent hover:border-blue-400"
+              className={`flex items-center min-h-[44px] px-3 py-2 rounded-md transition-all duration-200 border-l-4 ${
+                isActive('/')
+                  ? 'border-blue-400 text-white bg-slate-700'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700 hover:border-blue-400'
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </a>
             <a
               href="/developers"
-              className="flex items-center px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-all duration-200 border-l-4 border-transparent hover:border-blue-400"
+              className={`flex items-center min-h-[44px] px-3 py-2 rounded-md transition-all duration-200 border-l-4 ${
+                isActive('/developers')
+                  ? 'border-blue-400 text-white bg-slate-700'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700 hover:border-blue-400'
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              For Developers
-            </a>
-            <a
-              href="/minions"
-              className="flex items-center px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-all duration-200 border-l-4 border-transparent hover:border-blue-400"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Run a Minion
+              Developers
             </a>
             <a
               href="/docs"
-              className="flex items-center px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-all duration-200 border-l-4 border-transparent hover:border-blue-400"
+              className={`flex items-center min-h-[44px] px-3 py-2 rounded-md transition-all duration-200 border-l-4 ${
+                isActive('/docs')
+                  ? 'border-blue-400 text-white bg-slate-700'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700 hover:border-blue-400'
+              }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Documentation
             </a>
-            <a
-              href="/technology"
-              className="flex items-center px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-all duration-200 border-l-4 border-transparent hover:border-blue-400"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Technology
-            </a>
+            {isAuthenticated && (
+              <a
+                href="/dashboard"
+                className={`flex items-center min-h-[44px] px-3 py-2 rounded-md transition-all duration-200 border-l-4 ${
+                  isActive('/dashboard')
+                    ? 'border-blue-400 text-white bg-slate-700'
+                    : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-700 hover:border-blue-400'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </a>
+            )}
             <div className="border-t border-slate-600 pt-2 mt-2">
               {isAuthenticated ? (
                 <div>
@@ -187,8 +221,15 @@ export default function Header() {
                     <span className="text-sm">{user?.profile.name || user?.profile.email || 'User'}</span>
                   </div>
                   <a
+                    href="/dashboard"
+                    className="block min-h-[44px] px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </a>
+                  <a
                     href="/profile"
-                    className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200"
+                    className="block min-h-[44px] px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     My Profile
@@ -198,7 +239,7 @@ export default function Header() {
                       setIsMenuOpen(false);
                       logout();
                     }}
-                    className="block w-full px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 text-left"
+                    className="block w-full min-h-[44px] px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 text-left"
                   >
                     Sign out
                   </button>

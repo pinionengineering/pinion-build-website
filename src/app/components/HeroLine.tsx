@@ -32,24 +32,24 @@ export default function HeroLine() {
 
   return (
     <div className="text-center py-8">
-      <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-4 leading-tight">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-4 leading-tight">
         When your problem turns on
       </h1>
-      
+
       <div className="flex justify-center mb-4">
         <div className="relative bg-slate-800 rounded-lg p-4 shadow-xl border-2 border-slate-600">
-          <div className="relative overflow-hidden h-16 flex items-center justify-center min-w-[320px]">
+          <div className="relative overflow-hidden h-16 flex items-center justify-center min-w-full sm:min-w-[320px]">
             {/* Split-flap background */}
             <div className="absolute inset-0 bg-gradient-to-b from-gray-800 via-gray-900 to-gray-800"></div>
-            
+
             {/* Horizontal divider line */}
             <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-600 z-10"></div>
-            
+
             {/* Text display */}
             <div className="relative z-20">
-              <div 
+              <div
                 className={`
-                  text-amber-400 text-3xl font-mono font-bold tracking-wider
+                  text-amber-400 text-2xl sm:text-3xl font-mono font-bold tracking-wider
                   transition-all duration-400 ease-in-out
                   ${isFlipping ? 'transform -translate-y-2 opacity-0' : 'transform translate-y-0 opacity-100'}
                 `}
@@ -61,15 +61,15 @@ export default function HeroLine() {
                 {features[currentFeature]}
               </div>
             </div>
-            
+
             {/* Mechanical elements */}
             <div className="absolute left-2 top-1/2 w-1 h-8 bg-gray-600 rounded-full transform -translate-y-1/2"></div>
             <div className="absolute right-2 top-1/2 w-1 h-8 bg-gray-600 rounded-full transform -translate-y-1/2"></div>
           </div>
         </div>
       </div>
-      
-      <h1 className="text-5xl md:text-6xl font-bold text-slate-800 leading-tight">
+
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-tight">
         turn on <span className="text-blue-500">Pinion</span>.
       </h1>
     </div>
