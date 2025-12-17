@@ -5,6 +5,7 @@ import FileUploadZone from './FileUploadZone';
 import { useUploadFile } from '@/hooks/useUploadFile';
 import PinStatusBadge from './PinStatusBadge';
 import type { PinStatusResponse } from '@/types/api';
+import { API_CONFIG } from '@/config/app.config';
 
 export default function UploadSection() {
   const { upload, uploading, progress, error } = useUploadFile();
@@ -80,7 +81,7 @@ export default function UploadSection() {
 
           <div className="mt-3 flex gap-2">
             <a
-              href={`https://hydrogen.pinion.build/ipfs/${uploadResult.pin.cid}`}
+              href={`${API_CONFIG.gateway.baseUrl}/web/ipfs/${uploadResult.pin.cid}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 text-sm underline"

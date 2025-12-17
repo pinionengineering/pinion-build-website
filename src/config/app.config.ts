@@ -12,6 +12,9 @@ export const API_CONFIG = {
   pinning: {
     baseUrl: 'https://hydrogen.pinion.build/pinning',
   },
+  gateway: {
+    baseUrl: 'https://hydrogen.pinion.build/gateway',
+  },
 } as const;
 
 // OAuth/OIDC Configuration

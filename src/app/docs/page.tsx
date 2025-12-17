@@ -10,21 +10,74 @@ export default function DocsPage() {
           <div className="px-4 py-5 sm:p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-8">Pinion Documentation</h1>
             
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8">
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-8">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm text-yellow-700">
-                    <strong>Warning:</strong> Pinion is in active development and the software is constantly in flux. This documentation is not guaranteed to be up to date and may not reflect the current state of the APIs.
+                  <p className="text-sm text-blue-700">
+                    <strong>Beta Documentation:</strong> Pinion is in active development. This documentation reflects our current APIs and is updated regularly. Join our <a href="mailto:beta@pinion.build" className="underline hover:text-blue-900">beta program</a> to get started.
                   </p>
                 </div>
               </div>
             </div>
-            
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6 mb-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Start Guide</h2>
+              <p className="text-gray-600 mb-6">Get started with Pinion in three simple steps:</p>
+
+              <div className="space-y-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
+                      1
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Get Your API Token</h3>
+                    <p className="text-gray-600">
+                      Sign in to your <a href="/dashboard" className="text-blue-600 hover:text-blue-800 font-medium">Dashboard</a> and navigate to your profile settings to create an API token. Keep it secure!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
+                      2
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Choose Your Tool</h3>
+                    <p className="text-gray-600">
+                      Use <code className="bg-white px-2 py-1 rounded border text-sm">curl</code> for quick tests, or install an IPFS pinning service client library for your language of choice.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
+                      3
+                    </div>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Make Your First Pin</h3>
+                    <p className="text-gray-600 mb-2">Try pinning content with a simple curl command:</p>
+                    <div className="bg-gray-900 text-gray-100 p-3 rounded-md font-mono text-sm overflow-x-auto">
+                      <pre>{`curl -X POST https://api.pinion.io/pins \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"cid": "bafybeigdyrzt...", "name": "my-first-pin"}'`}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Table of Contents</h2>
               <nav className="space-y-2">

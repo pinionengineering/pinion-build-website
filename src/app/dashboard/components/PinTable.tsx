@@ -5,6 +5,7 @@ import PinStatusBadge from './PinStatusBadge';
 import DeletePinModal from './DeletePinModal';
 import ReplacePinModal from './ReplacePinModal';
 import type { PinStatusResponse } from '@/types/api';
+import { API_CONFIG } from '@/config/app.config';
 
 interface PinTableProps {
   pins: PinStatusResponse[];
@@ -88,7 +89,7 @@ export default function PinTable({ pins, onRefresh }: PinTableProps) {
                       Delete
                     </button>
                     <a
-                      href={`https://hydrogen.pinion.build/ipfs/${pin.pin.cid}`}
+                      href={`${API_CONFIG.gateway.baseUrl}/web/ipfs/${pin.pin.cid}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-slate-400 hover:text-white"

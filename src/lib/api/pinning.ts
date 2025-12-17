@@ -23,7 +23,7 @@ export const pinningService = {
       if (filters?.limit) params.append('limit', filters.limit.toString());
 
       const query = params.toString();
-      const url = query ? `/web/pins?${query}` : '/web/pins';
+      const url = query ? `/api/v1/pins?${query}` : '/api/v1/pins';
 
       return pinningApi.get<PinResults>(url);
     },
@@ -33,7 +33,7 @@ export const pinningService = {
      * GET /pins/{requestid}
      */
     get: async (requestId: string): Promise<PinStatusResponse> => {
-      return pinningApi.get<PinStatusResponse>(`/web/pins/${requestId}`);
+      return pinningApi.get<PinStatusResponse>(`/api/v1/pins/${requestId}`);
     },
 
     /**
@@ -41,7 +41,7 @@ export const pinningService = {
      * POST /pins
      */
     create: async (pin: Pin): Promise<PinStatusResponse> => {
-      return pinningApi.post<PinStatusResponse>('/web/pins', pin);
+      return pinningApi.post<PinStatusResponse>('/api/v1/pins', pin);
     },
 
     /**
@@ -49,7 +49,7 @@ export const pinningService = {
      * DELETE /pins/{requestid}
      */
     delete: async (requestId: string): Promise<void> => {
-      return pinningApi.fetch<void>(`/web/pins/${requestId}`, {
+      return pinningApi.fetch<void>(`/api/v1/pins/${requestId}`, {
         method: 'DELETE'
       });
     },
@@ -59,7 +59,7 @@ export const pinningService = {
      * POST /pins/{requestid}
      */
     replace: async (requestId: string, pin: Pin): Promise<PinStatusResponse> => {
-      return pinningApi.post<PinStatusResponse>(`/web/pins/${requestId}`, pin);
+      return pinningApi.post<PinStatusResponse>(`/api/v1/pins/${requestId}`, pin);
     },
   },
 };

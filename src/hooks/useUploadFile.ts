@@ -63,7 +63,7 @@ export function useUploadFile() {
       if (options?.name) params.append('name', options.name);
       if (options?.format) params.append('format', options.format);
       const query = params.toString();
-      const url = query ? `/web/?${query}` : '/web/';
+      const url = query ? `/api/v1/?${query}` : '/api/v1/';
 
       // Determine content type
       const contentType = file.name.endsWith('.car')
