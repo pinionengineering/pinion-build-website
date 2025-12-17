@@ -1,42 +1,37 @@
 "use client"
 
+import { useEffect } from "react"
 import { UserManager } from "oidc-client-ts"
-
-const userManager = new UserManager({
-  authority: "https://hydrogen.pinion.build/authen/application/o/pinion-cli",
-  client_id: "R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq",
-  redirect_uri: typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : "",
-  scope: "openid email profile user_hint offline_access",
-  response_type: "code",
-})
+import { AUTH_CONFIG } from "@/config/app.config"
 
 export default function LoginPage() {
-  const handlePinionLogin = async () => {
-    try {
-      await userManager.signinRedirect()
-    } catch (error) {
-      console.error("Login error:", error)
-    }
-  }
+  useEffect(() => {
+    const initiateLogin = async () => {
+      try {
+        const userManager = new UserManager({
+          authority: AUTH_CONFIG.authority,
+          client_id: AUTH_CONFIG.clientId,
+          redirect_uri: `${window.location.origin}/auth/callback`,
+          scope: AUTH_CONFIG.scope,
+          response_type: AUTH_CONFIG.responseType,
+        });
 
+        // Automatically start OAuth redirect
+        await userManager.signinRedirect();
+      } catch (error) {
+        console.error("Login error:", error);
+      }
+    };
+
+    initiateLogin();
+  }, []);
+
+  // Show loading state while redirecting
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to Pinion
-          </h2>
-        </div>
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="space-y-6">
-            <button
-              onClick={handlePinionLogin}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Sign in with Pinion
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto"></div>
+        <p className="mt-4 text-slate-300">Redirecting to login...</p>
       </div>
     </div>
   );

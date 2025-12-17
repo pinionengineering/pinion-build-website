@@ -2,15 +2,25 @@
 
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PinListSection from './components/PinListSection';
 import UploadSection from './components/UploadSection';
+import NoAccessDashboard from './components/NoAccessDashboard';
 
 export default function DashboardPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+
+  // Authorization state: null (unknown), true (authorized), false (unauthorized)
+  // Start optimistically as null - assume user has access until proven otherwise
+  const [authorizationState, setAuthorizationState] = useState<boolean | null>(null);
+
+  // Callback for child components to signal authorization errors
+  const handleAuthorizationError = useCallback(() => {
+    setAuthorizationState(false);
+  }, []);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -33,6 +43,12 @@ export default function DashboardPage() {
     return null; // Router will redirect
   }
 
+  // If authorization failed, show no-access dashboard
+  if (authorizationState === false) {
+    return <NoAccessDashboard />;
+  }
+
+  // Normal dashboard (authorization state is null or true)
   return (
     <div className="min-h-screen bg-slate-900">
       <Header />
@@ -47,10 +63,10 @@ export default function DashboardPage() {
 
         <div className="space-y-8">
           {/* Upload Section */}
-          <UploadSection />
+          <UploadSection onAuthorizationError={handleAuthorizationError} />
 
           {/* Pin List/Browser Section */}
-          <PinListSection />
+          <PinListSection onAuthorizationError={handleAuthorizationError} />
         </div>
       </main>
 

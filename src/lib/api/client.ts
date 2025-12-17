@@ -1,5 +1,5 @@
 import { API_CONFIG } from '@/config/app.config';
-import { clearAuthOnError } from './auth-handler';
+import { refreshAccessToken } from './token-refresh';
 import { UserManager } from 'oidc-client-ts';
 import { AUTH_CONFIG } from '@/config/app.config';
 
@@ -7,7 +7,8 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public response?: any
+    public response?: any,
+    public isAuthorizationError: boolean = false
   ) {
     super(message);
     this.name = 'ApiError';
@@ -16,6 +17,7 @@ export class ApiError extends Error {
 
 interface FetchOptions extends RequestInit {
   requireAuth?: boolean;
+  isRetry?: boolean; // Internal flag to prevent infinite retry loops
 }
 
 let userManager: UserManager | null = null;
@@ -63,7 +65,7 @@ export class ApiClient {
     path: string,
     options: FetchOptions = {}
   ): Promise<T> {
-    const { requireAuth = true, headers = {}, ...fetchOptions } = options;
+    const { requireAuth = true, isRetry = false, headers = {}, ...fetchOptions } = options;
 
     // Build headers
     const requestHeaders: Record<string, string> = {
@@ -75,7 +77,7 @@ export class ApiClient {
     if (requireAuth) {
       const token = await this.getAuthToken();
       if (!token) {
-        throw new ApiError('Authentication required', 401);
+        throw new ApiError('Authentication required', 401, undefined, true);
       }
       requestHeaders['Authorization'] = `Bearer ${token}`;
     }
@@ -99,12 +101,23 @@ export class ApiClient {
         // Use default error message
       }
 
-      // If 401, clear auth state
-      if (response.status === 401) {
-        clearAuthOnError();
+      // On 401, attempt token refresh and retry (but only once)
+      if (response.status === 401 && !isRetry) {
+        console.log('401 error detected, attempting token refresh...');
+        const refreshed = await refreshAccessToken();
+
+        if (refreshed) {
+          console.log('Token refresh successful, retrying request...');
+          // Retry the request with the new token
+          return this.fetch<T>(path, { ...options, isRetry: true });
+        }
+
+        // Token refresh failed - this is an authorization error
+        console.warn('Token refresh failed, user lacks authorization');
+        throw new ApiError(errorMessage, response.status, errorBody, true);
       }
 
-      throw new ApiError(errorMessage, response.status, errorBody);
+      throw new ApiError(errorMessage, response.status, errorBody, response.status === 401);
     }
 
     // Parse response

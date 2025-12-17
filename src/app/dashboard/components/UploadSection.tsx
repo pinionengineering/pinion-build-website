@@ -1,16 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FileUploadZone from './FileUploadZone';
 import { useUploadFile } from '@/hooks/useUploadFile';
 import PinStatusBadge from './PinStatusBadge';
 import type { PinStatusResponse } from '@/types/api';
 import { API_CONFIG } from '@/config/app.config';
 
-export default function UploadSection() {
+interface UploadSectionProps {
+  onAuthorizationError?: () => void;
+}
+
+export default function UploadSection({ onAuthorizationError }: UploadSectionProps) {
   const { upload, uploading, progress, error } = useUploadFile();
   const [uploadResult, setUploadResult] = useState<PinStatusResponse | null>(null);
   const [fileName, setFileName] = useState<string>('');
+
+  // Check if error is a 401 authorization error
+  useEffect(() => {
+    if (error && error.message.includes('401')) {
+      onAuthorizationError?.();
+    }
+  }, [error, onAuthorizationError]);
 
   const handleFileSelect = async (file: File) => {
     try {

@@ -1,14 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePins } from '@/hooks/usePins';
 import FilterControls from './FilterControls';
 import PinTable from './PinTable';
 import type { PinFilters } from '@/types/api';
+import { ApiError } from '@/lib/api/client';
 
-export default function PinListSection() {
+interface PinListSectionProps {
+  onAuthorizationError?: () => void;
+}
+
+export default function PinListSection({ onAuthorizationError }: PinListSectionProps) {
   const [filters, setFilters] = useState<PinFilters>({ limit: 50 });
   const { data, loading, error, refetch } = usePins(filters);
+
+  // Check if error is a 401 authorization error
+  useEffect(() => {
+    if (error) {
+      // Check if it's an ApiError with authorization flag or contains 401 in message
+      const isAuthError =
+        (error instanceof ApiError && error.isAuthorizationError) ||
+        error.message.includes('401') ||
+        error.message.includes('Unauthorized');
+
+      if (isAuthError) {
+        onAuthorizationError?.();
+      }
+    }
+  }, [error, onAuthorizationError]);
 
   return (
     <section className="bg-slate-800 rounded-lg shadow-lg p-6 border border-slate-700">
