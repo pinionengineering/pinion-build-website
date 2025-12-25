@@ -12,8 +12,10 @@ export default function GitHubEventsPage() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [limit, setLimit] = useState(50);
+  const [offset, setOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, loading, error, refetch } = useGitHubEvents(limit, isAuthenticated);
+  const { data, loading, error, refetch } = useGitHubEvents(limit, offset, isAuthenticated);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -67,7 +69,11 @@ export default function GitHubEventsPage() {
                 Show:
                 <select
                   value={limit}
-                  onChange={(e) => setLimit(Number(e.target.value))}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value));
+                    setOffset(0);
+                    setCurrentPage(1);
+                  }}
                   className="ml-2 bg-slate-700 text-white rounded px-3 py-1 border border-slate-600"
                 >
                   <option value={10}>10 events</option>
@@ -116,8 +122,36 @@ export default function GitHubEventsPage() {
               </div>
             ) : (
               <div>
-                <div className="mb-4 text-slate-400 text-sm">
-                  Showing {data.count} event{data.count !== 1 ? 's' : ''}
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="text-slate-400 text-sm">
+                    Showing {data.count} event{data.count !== 1 ? 's' : ''} (Page {currentPage})
+                  </div>
+
+                  {/* Pagination Controls */}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => {
+                        const newOffset = Math.max(0, offset - limit);
+                        setOffset(newOffset);
+                        setCurrentPage(Math.floor(newOffset / limit) + 1);
+                      }}
+                      disabled={offset === 0 || loading}
+                      className="bg-slate-700 text-slate-300 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      ← Previous
+                    </button>
+                    <button
+                      onClick={() => {
+                        const newOffset = offset + limit;
+                        setOffset(newOffset);
+                        setCurrentPage(Math.floor(newOffset / limit) + 1);
+                      }}
+                      disabled={data.count < limit || loading}
+                      className="bg-slate-700 text-slate-300 px-4 py-2 rounded-md hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next →
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-4">

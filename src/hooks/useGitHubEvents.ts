@@ -7,6 +7,7 @@ import type { ApiState } from '@/types/hooks';
 
 export function useGitHubEvents(
   limit: number = 50,
+  offset: number = 0,
   enabled: boolean = true
 ): ApiState<GitHubEventsResponse> {
   const [data, setData] = useState<GitHubEventsResponse | null>(null);
@@ -23,7 +24,7 @@ export function useGitHubEvents(
       setLoading(true);
       setError(null);
 
-      const response = await uploadService.github.getEvents(limit);
+      const response = await uploadService.github.getEvents(limit, offset);
       setData(response);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch events'));
@@ -31,7 +32,7 @@ export function useGitHubEvents(
     } finally {
       setLoading(false);
     }
-  }, [limit, enabled]);
+  }, [limit, offset, enabled]);
 
   useEffect(() => {
     fetchEvents();

@@ -20,6 +20,8 @@ export interface WebhookEvent {
 export interface GitHubEventsResponse {
   events: WebhookEvent[];
   count: number;
+  limit: number;
+  offset: number;
 }
 
 // Payments Types
