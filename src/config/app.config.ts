@@ -19,7 +19,7 @@ export const API_CONFIG = {
 
 // OAuth/OIDC Configuration
 export const AUTH_CONFIG = {
-  authority: 'https://hydrogen.pinion.build/authen/application/o/pinion-cli',
+  authority: 'https://hydrogen.pinion.build/authen/application/o/pinion-client',
   clientId: 'R8MTFU93CxcZVnWIs25xvtIUQclXNWehhmBURCIq',
   scope: 'openid email profile user_hint offline_access',
   responseType: 'code',
