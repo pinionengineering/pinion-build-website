@@ -117,20 +117,12 @@ export default function Header() {
                   )}
                 </div>
               ) : (
-                <div className="space-x-4">
-                  <button
-                    onClick={login}
-                    className="text-slate-300 hover:text-white transition-colors duration-200"
-                  >
-                    Login
-                  </button>
-                  <a
-                    href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    Sign Up
-                  </a>
-                </div>
+                <button
+                  onClick={login}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Login
+                </button>
               )}
             </div>
           </nav>
@@ -245,24 +237,15 @@ export default function Header() {
                   </button>
                 </div>
               ) : (
-                <div>
-                  <button
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      login();
-                    }}
-                    className="block px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-md transition-colors duration-200 w-full text-left"
-                  >
-                    Login
-                  </button>
-                  <a
-                    href="mailto:beta@pinioneng.com?subject=Beta Access Request&body=Hi!,%0A%0AI would like to be part of the Pinion platform beta program. including three months of free storage and first-mover discounts.%0A%0AThank you!"
-                    className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign Up
-                  </a>
-                </div>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    login();
+                  }}
+                  className="block px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors duration-200 w-full text-left"
+                >
+                  Login
+                </button>
               )}
             </div>
           </nav>
